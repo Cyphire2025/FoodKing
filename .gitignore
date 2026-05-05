@@ -1,0 +1,46 @@
+# Archives and large distribution files
+*.zip
+*.rar
+*.7z
+
+# Flutter/Dart generated files
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/build/
+**/coverage/
+
+# Android generated/local files
+**/android/local.properties
+**/android/key.properties
+**/android/.gradle/
+**/android/.kotlin/
+**/android/app/.cxx/
+**/*.jks
+**/*.keystore
+
+# iOS generated/local files
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Pods/
+**/ios/.symlinks/
+
+# Firebase/app config files that can contain project credentials
+**/google-services.json
+**/google-services*.json
+**/GoogleService-Info.plist
+**/firebase-web.json
+
+# Common dependency/build folders
+node_modules/
+vendor/
+dist/
+.env
+.env.*
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
