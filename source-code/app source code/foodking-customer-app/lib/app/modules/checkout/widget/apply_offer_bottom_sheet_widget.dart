@@ -172,7 +172,7 @@ class _ApplyOfferViewState extends State<ApplyOfferView> {
                                                 12.r,
                                               ),
                                             ),
-                                    color: Colors.green,
+                                    color: AppColor.primaryColor,
                                   ),
                                   child: Center(
                                     child: Text(
@@ -309,6 +309,7 @@ class _ApplyOfferViewState extends State<ApplyOfferView> {
                                                                       couponController
                                                                           .couponDataList[index]
                                                                           .code!;
+                                                                  cartController.checkCoupon();
                                                                 },
                                                                 child: Container(
                                                                   padding:

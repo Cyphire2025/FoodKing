@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  static const Color primaryColor = Color(0xff6D335C);
+  static Color primaryColor = const Color(0xFF9FD789);
   static const Color primaryBackgroundColor = Color(0xffFDF6FB);
   static const Color loginButtonColor = Color(0xff6D335C);
   static const Color fontColor = Color(0xff1F1F39);
@@ -103,6 +103,10 @@ class Images {
   static String get veg => 'assets/images/veg.png';
   static String get IconClose => 'assets/icons/close-circle.svg';
   static String get active_order => 'assets/icons/active_order.svg';
+  static String get activeEmpty => 'assets/images/active.png';
+  static String get activeLogo => 'assets/images/activelogo.png';
+  static String get previousEmpty => 'assets/images/previous.png';
+  static String get previousLogo => 'assets/images/previouslogo.png';
   static String get deactive => 'assets/icons/deactive.svg';
   static String get IconAddItem => 'assets/icons/add-circle.svg';
   static String get IconRemoveItem => 'assets/images/remove.png';

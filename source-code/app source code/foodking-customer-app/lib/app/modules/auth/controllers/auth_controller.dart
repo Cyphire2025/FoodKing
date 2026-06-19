@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../util/api-list.dart';
 import '../../../../util/constant.dart';
 import '../../../../widget/custom_snackbar.dart';
@@ -22,6 +23,12 @@ class AuthController extends GetxController {
   Server server = Server();
   LoginModel loginModel = LoginModel();
   bool loader = false;
+  List<Map<String, dynamic>> socialLoginProviders = [];
+  bool _googleSignInInitialized = false;
+
+  bool get hasGoogleLogin => socialLoginProviders.any(
+    (provider) => provider['slug'] == 'google' && provider['status'] == 5,
+  );
 
   @override
   void onInit() {
@@ -33,7 +40,210 @@ class AuthController extends GetxController {
     if (box.read('viewValue') == null) {
       box.write('viewValue', 0);
     }
+    getSocialLoginProviders();
     super.onInit();
+  }
+
+  Future<void> getSocialLoginProviders() async {
+    try {
+      final response = await server.getRequestWithoutToken(
+        endPoint: APIList.socialLoginProviders,
+      );
+      if (response != null && response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        final data = jsonResponse["data"];
+        if (data is List) {
+          socialLoginProviders = data
+              .whereType<Map<String, dynamic>>()
+              .where((provider) => provider['status'] == 5)
+              .toList();
+          update();
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Map<String, dynamic>? socialProvider(String slug) {
+    for (final provider in socialLoginProviders) {
+      if (provider['slug'] == slug) {
+        return provider;
+      }
+    }
+    return null;
+  }
+
+  Future<String?> socialLoginUrl(String provider) async {
+    loader = true;
+    update();
+    try {
+      final response = await server.getRequestWithoutToken(
+        endPoint: APIList.socialLoginUrl(provider),
+      );
+      if (response != null && response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return jsonResponse["url"]?.toString();
+      }
+      if (response != null) {
+        final jsonResponse = json.decode(response.body);
+        customSnackbar(
+          "ERROR".tr,
+          jsonResponse["errors"]?.toString() ?? "Unable to start Google login",
+          AppColor.error,
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      loader = false;
+      update();
+    }
+    return null;
+  }
+
+  Future<void> _initializeGoogleSignIn() async {
+    if (_googleSignInInitialized) {
+      return;
+    }
+
+    if (socialLoginProviders.isEmpty) {
+      await getSocialLoginProviders();
+    }
+
+    final googleProvider = socialProvider('google');
+    final serverClientId = googleProvider?['client_id']?.toString();
+    if (serverClientId == null || serverClientId.isEmpty) {
+      throw const GoogleSignInException(
+        code: GoogleSignInExceptionCode.providerConfigurationError,
+        description:
+            'Google client id is missing from admin social login settings.',
+      );
+    }
+
+    await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
+    _googleSignInInitialized = true;
+  }
+
+  Future<LoginModel?> googleLogin() async {
+    loader = true;
+    update();
+
+    try {
+      await _initializeGoogleSignIn();
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final idToken = googleUser.authentication.idToken;
+
+      if (idToken == null || idToken.isEmpty) {
+        customSnackbar(
+          "ERROR".tr,
+          "Google login did not return an ID token",
+          AppColor.error,
+        );
+        return null;
+      }
+
+      return verifyGoogleIdToken(idToken);
+    } on GoogleSignInException catch (e) {
+      customSnackbar(
+        "ERROR".tr,
+        e.description ?? "Google login failed",
+        AppColor.error,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+      customSnackbar("ERROR".tr, "Google login failed", AppColor.error);
+    } finally {
+      loader = false;
+      update();
+    }
+
+    return null;
+  }
+
+  Future<LoginModel?> verifyGoogleIdToken(String idToken) async {
+    final jsonBody = json.encode({'id_token': idToken});
+    try {
+      final response = await server.postRequest(
+        endPoint: APIList.socialLoginMobile('google'),
+        body: jsonBody,
+      );
+      if (response != null && response.statusCode == 201) {
+        final jsonResponse = json.decode(response.body);
+        loginModel = LoginModel.fromJson(jsonResponse);
+        box.write('isLogedIn', true);
+        final bearerToken = 'Bearer ${loginModel.token}';
+        box.write('justToken', loginModel.token);
+        box.write('token', bearerToken);
+        Server.initClass(token: box.read('token'));
+        Get.find<ProfileController>().getProfileData();
+        customSnackbar(
+          "SUCCESS".tr,
+          jsonResponse["message"].toString(),
+          AppColor.success,
+        );
+        Get.offAll(() => DashboardView());
+        return loginModel;
+      }
+      if (response != null) {
+        final jsonResponse = json.decode(response.body);
+        customSnackbar(
+          "ERROR".tr,
+          jsonResponse["errors"]?.toString() ??
+              jsonResponse["message"]?.toString() ??
+              "Google login failed",
+          AppColor.error,
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return null;
+  }
+
+  Future<LoginModel?> verifySocialLogin(String provider, String code) async {
+    loader = true;
+    update();
+    final jsonBody = json.encode({'code': code});
+    try {
+      final response = await server.postRequest(
+        endPoint: APIList.socialLoginVerify(provider),
+        body: jsonBody,
+      );
+      if (response != null && response.statusCode == 201) {
+        final jsonResponse = json.decode(response.body);
+        loginModel = LoginModel.fromJson(jsonResponse);
+        box.write('isLogedIn', true);
+        final bearerToken = 'Bearer ${loginModel.token}';
+        box.write('justToken', loginModel.token);
+        box.write('token', bearerToken);
+        Server.initClass(token: box.read('token'));
+        Get.find<ProfileController>().getProfileData();
+        customSnackbar(
+          "SUCCESS".tr,
+          jsonResponse["message"].toString(),
+          AppColor.success,
+        );
+        Get.offAll(() => DashboardView());
+        return loginModel;
+      }
+      if (response != null) {
+        final jsonResponse = json.decode(response.body);
+        customSnackbar(
+          "ERROR".tr,
+          jsonResponse["errors"]?.toString() ??
+              jsonResponse["message"]?.toString() ??
+              "Google login failed",
+          AppColor.error,
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      loader = false;
+      update();
+    }
+    return null;
   }
 
   Future<LoginModel?> login(email, password) async {

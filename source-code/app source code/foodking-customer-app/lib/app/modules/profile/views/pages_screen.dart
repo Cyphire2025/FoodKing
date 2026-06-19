@@ -5,6 +5,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:foodking/util/constant.dart';
+import 'package:foodking/util/localized_text.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -29,20 +30,25 @@ class _PagesScreenState extends State<PagesScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          widget.tittle!,
+          localizeText(widget.tittle),
           style: TextStyle(
-              fontFamily: 'Rubik',
-              fontWeight: FontWeight.w500,
-              fontSize: 16.sp,
-              color: Colors.black),
+            fontFamily: 'Rubik',
+            fontWeight: FontWeight.w500,
+            fontSize: 16.sp,
+            color: Colors.black,
+          ),
         ),
         centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: SvgPicture.asset(Images.back,
-              colorFilter:
-                  ColorFilter.mode(AppColor.primaryColor, BlendMode.srcIn)),
+          icon: SvgPicture.asset(
+            Images.back,
+            colorFilter: ColorFilter.mode(
+              AppColor.primaryColor,
+              BlendMode.srcIn,
+            ),
+          ),
           onPressed: () {
             Get.back();
           },
@@ -52,9 +58,7 @@ class _PagesScreenState extends State<PagesScreen> {
         child: Padding(
           padding: EdgeInsets.only(left: 16.w, right: 16.w),
           child: Column(
-            children: [
-              Html(data: widget.description),
-            ],
+            children: [Html(data: localizeText(widget.description))],
           ),
         ),
       ),

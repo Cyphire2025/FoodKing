@@ -38,10 +38,18 @@ class ConfigData {
   final int? sitePhoneVerification;
   final int? siteLanguageSwitch;
   final int? siteOnlinePaymentGateway;
+  final List<PaymentGatewayData> paymentGateways;
   final int? siteGuestLogin;
   final String? themeLogo;
   final String? themeFooterLogo;
   final String? themeFaviconLogo;
+  final String? appIntroMediaUrl;
+  final String? appIntroMediaType;
+  final LatestUpdateData? latestUpdate;
+  final List<LatestUpdateData> latestUpdates;
+  final String? appPrimaryColor;
+  final String? appBannerOneUrl;
+  final String? appBannerTwoUrl;
   final String? otpType;
   final String? otpDigitLimit;
   final String? otpExpireTime;
@@ -102,10 +110,18 @@ class ConfigData {
     this.sitePhoneVerification,
     this.siteLanguageSwitch,
     this.siteOnlinePaymentGateway,
+    this.paymentGateways = const [],
     this.siteGuestLogin,
     this.themeLogo,
     this.themeFooterLogo,
     this.themeFaviconLogo,
+    this.appIntroMediaUrl,
+    this.appIntroMediaType,
+    this.latestUpdate,
+    this.latestUpdates = const [],
+    this.appPrimaryColor,
+    this.appBannerOneUrl,
+    this.appBannerTwoUrl,
     this.otpType,
     this.otpDigitLimit,
     this.otpExpireTime,
@@ -167,10 +183,25 @@ class ConfigData {
     sitePhoneVerification: json["site_phone_verification"],
     siteLanguageSwitch: json["site_language_switch"],
     siteOnlinePaymentGateway: json["site_online_payment_gateway"],
+    paymentGateways: json["payment_gateways"] == null
+        ? []
+        : List<PaymentGatewayData>.from(
+            json["payment_gateways"].map((x) => PaymentGatewayData.fromJson(x)),
+          ),
     siteGuestLogin: json["site_guest_login"],
     themeLogo: json["theme_logo"],
     themeFooterLogo: json["theme_footer_logo"],
     themeFaviconLogo: json["theme_favicon_logo"],
+    appIntroMediaUrl: json["app_intro_media_url"],
+    appIntroMediaType: json["app_intro_media_type"],
+    latestUpdate: _latestUpdateFromJson(json["latest_update"]),
+    latestUpdates: _latestUpdatesFromJson(
+      json["latest_updates"],
+      json["latest_update"],
+    ),
+    appPrimaryColor: json["app_primary_color"]?.toString(),
+    appBannerOneUrl: json["app_banner_1_url"]?.toString(),
+    appBannerTwoUrl: json["app_banner_2_url"]?.toString(),
     otpType: json["otp_type"],
     otpDigitLimit: json["otp_digit_limit"],
     otpExpireTime: json["otp_expire_time"],
@@ -238,6 +269,134 @@ class ConfigData {
     "order_setup_basic_delivery_charge": orderSetupBasicDeliveryCharge,
     "order_setup_charge_per_kilo": orderSetupChargePerKilo,
     "site_online_payment_gateway": siteOnlinePaymentGateway,
+    "payment_gateways": paymentGateways.map((x) => x.toJson()).toList(),
+    "app_intro_media_url": appIntroMediaUrl,
+    "app_intro_media_type": appIntroMediaType,
+    "latest_update": latestUpdate?.toJson(),
+    "latest_updates": latestUpdates.map((x) => x.toJson()).toList(),
+    "app_primary_color": appPrimaryColor,
+    "app_banner_1_url": appBannerOneUrl,
+    "app_banner_2_url": appBannerTwoUrl,
     "demo": demo,
+  };
+
+  static LatestUpdateData? _latestUpdateFromJson(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return LatestUpdateData.fromJson(value);
+    }
+    if (value is Map) {
+      return LatestUpdateData.fromJson(Map<String, dynamic>.from(value));
+    }
+    return null;
+  }
+
+  static List<LatestUpdateData> _latestUpdatesFromJson(
+    dynamic updatesValue,
+    dynamic fallbackValue,
+  ) {
+    final updates = <LatestUpdateData>[];
+
+    if (updatesValue is List) {
+      for (final item in updatesValue) {
+        final update = _latestUpdateFromJson(item);
+        if (update != null) {
+          updates.add(update);
+        }
+      }
+      return updates;
+    }
+
+    final fallbackUpdate = _latestUpdateFromJson(fallbackValue);
+    if (fallbackUpdate != null) {
+      updates.add(fallbackUpdate);
+    }
+
+    return updates;
+  }
+}
+
+class LatestUpdateData {
+  final int? id;
+  final String? imageUrl;
+  final String? heading;
+  final String? description;
+  final bool buttonOneEnabled;
+  final String? buttonOneText;
+  final String? buttonOneLink;
+  final bool buttonTwoEnabled;
+  final String? buttonTwoText;
+  final String? buttonTwoLink;
+
+  const LatestUpdateData({
+    this.id,
+    this.imageUrl,
+    this.heading,
+    this.description,
+    this.buttonOneEnabled = false,
+    this.buttonOneText,
+    this.buttonOneLink,
+    this.buttonTwoEnabled = false,
+    this.buttonTwoText,
+    this.buttonTwoLink,
+  });
+
+  factory LatestUpdateData.fromJson(Map<String, dynamic> json) =>
+      LatestUpdateData(
+        id: json["id"],
+        imageUrl: json["image_url"]?.toString(),
+        heading: json["heading"]?.toString(),
+        description: json["description"]?.toString(),
+        buttonOneEnabled: _boolFromJson(json["button_one_enabled"]),
+        buttonOneText: json["button_one_text"]?.toString(),
+        buttonOneLink: json["button_one_link"]?.toString(),
+        buttonTwoEnabled: _boolFromJson(json["button_two_enabled"]),
+        buttonTwoText: json["button_two_text"]?.toString(),
+        buttonTwoLink: json["button_two_link"]?.toString(),
+      );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "image_url": imageUrl,
+    "heading": heading,
+    "description": description,
+    "button_one_enabled": buttonOneEnabled,
+    "button_one_text": buttonOneText,
+    "button_one_link": buttonOneLink,
+    "button_two_enabled": buttonTwoEnabled,
+    "button_two_text": buttonTwoText,
+    "button_two_link": buttonTwoLink,
+  };
+
+  static bool _boolFromJson(dynamic value) {
+    if (value is bool) return value;
+    if (value is num) return value != 0;
+    if (value is String) {
+      return value == '1' || value.toLowerCase() == 'true';
+    }
+    return false;
+  }
+}
+
+class PaymentGatewayData {
+  final int? id;
+  final String? name;
+  final String? slug;
+  final String? image;
+
+  const PaymentGatewayData({this.id, this.name, this.slug, this.image});
+
+  factory PaymentGatewayData.fromJson(Map<String, dynamic> json) =>
+      PaymentGatewayData(
+        id: json["id"],
+        name: json["name"]?.toString(),
+        slug: json["slug"]?.toString(),
+        image: json["image"]?.toString(),
+      );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "slug": slug,
+    "image": image,
   };
 }

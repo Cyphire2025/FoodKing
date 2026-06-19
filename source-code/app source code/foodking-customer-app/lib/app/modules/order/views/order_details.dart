@@ -27,6 +27,10 @@ class OrderDetailsView extends StatefulWidget {
 }
 
 class _StatusViewViewState extends State<OrderDetailsView> {
+  static const Color _ink = Color(0xff2f0f4a);
+  static const Color _muted = Color(0xff7c7488);
+  static const Color _softPlum = Color(0xfff4eaf5);
+
   OrderController orderController = Get.put(OrderController());
   SplashController connect = Get.put(SplashController());
 
@@ -70,14 +74,18 @@ class _StatusViewViewState extends State<OrderDetailsView> {
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 20.sp,
-              color: Colors.black,
+              color: _ink,
             ),
           ),
           centerTitle: false,
           elevation: 0,
           backgroundColor: Colors.white,
           leading: IconButton(
-            icon: SvgPicture.asset(Images.back),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: AppColor.primaryColor,
+              size: 24.sp,
+            ),
             onPressed: () {
               Get.back();
             },
@@ -120,7 +128,7 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                         fontFamily: 'Rubik',
                                         fontWeight: FontWeight.w500,
                                         fontSize: Dimensions.fontSizeLarge.sp,
-                                        color: AppColor.activeTxtColor,
+                                        color: AppColor.primaryColor,
                                       ),
                                     ),
                                   ],
@@ -320,13 +328,13 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                                     Text(
                                                       "ORDER_HAS_BEEN_CANCELLED"
                                                           .tr,
-                                                      style: TextStyle(
-                                                        fontSize: 22.sp,
-                                                        fontFamily: "Rubik",
-                                                        color: AppColor.error,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
+                                          style: TextStyle(
+                                            fontSize: 22.sp,
+                                            fontFamily: "Rubik",
+                                            color: AppColor.primaryColor,
+                                            fontWeight:
+                                                FontWeight.w700,
+                                          ),
                                                       textAlign:
                                                           TextAlign.center,
                                                     ),
@@ -344,13 +352,13 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                                   children: [
                                                     Text(
                                                       "ORDER_RETURNED".tr,
-                                                      style: TextStyle(
-                                                        fontSize: 25.sp,
-                                                        fontFamily: "Rubik",
-                                                        color: AppColor.error,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
+                                          style: TextStyle(
+                                            fontSize: 25.sp,
+                                            fontFamily: "Rubik",
+                                            color: AppColor.primaryColor,
+                                            fontWeight:
+                                                FontWeight.w700,
+                                          ),
                                                       textAlign:
                                                           TextAlign.center,
                                                     ),
@@ -539,7 +547,12 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                                     .orderDetailsData
                                                     .value
                                                     .status ==
-                                                10
+                                                10 &&
+                                            orderController
+                                                    .orderDetailsData
+                                                    .value
+                                                    .orderType ==
+                                                5
                                             ? Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
@@ -688,7 +701,7 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                           height: 35.h,
                                           width: 35.w,
                                           decoration: BoxDecoration(
-                                            color: AppColor.viewAllbg,
+                                            color: _softPlum,
                                             borderRadius: BorderRadius.circular(
                                               100,
                                             ),
@@ -716,18 +729,24 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                       child: Container(
                                         height: 35.h,
                                         width: 35.w,
-                                        decoration: BoxDecoration(
-                                          color: AppColor.viewAllbg,
-                                          borderRadius: BorderRadius.circular(
-                                            100,
+                                          decoration: BoxDecoration(
+                                            color: _softPlum,
+                                            borderRadius: BorderRadius.circular(
+                                              100,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: SvgPicture.asset(
+                                              Images.call,
+                                              colorFilter: ColorFilter.mode(
+                                                AppColor.primaryColor,
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: SvgPicture.asset(Images.call),
-                                        ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ],
@@ -838,7 +857,7 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                                   4
                                             ? "OTHER".tr +
                                                   " (${orderController.orderDetailsData.value.posPaymentNote})"
-                                            : "CASH_ON_DELIVERY".tr,
+                                            : orderController.orderDetailsData.value.paymentMethod == 1 ? "CASH_ON_DELIVERY".tr : "DIGITAL_PAYMENT".tr,
                                         style: TextStyle(
                                           fontFamily: "Rubik",
                                           fontSize: 12.sp,
@@ -884,7 +903,7 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                           fontFamily: "Rubik",
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w500,
-                                          color: AppColor.error,
+                                          color: AppColor.primaryColor,
                                         ),
                                       ),
                                   ],
@@ -1501,7 +1520,7 @@ class _StatusViewViewState extends State<OrderDetailsView> {
                                               style: ElevatedButton.styleFrom(
                                                 elevation: 0,
                                                 backgroundColor:
-                                                    AppColor.deleteBtnColor,
+                                                    AppColor.primaryColor,
                                                 minimumSize: Size(156.w, 48.h),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:

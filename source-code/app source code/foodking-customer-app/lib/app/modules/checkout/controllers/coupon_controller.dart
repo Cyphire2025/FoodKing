@@ -6,6 +6,7 @@ import '../../../data/repository/coupon_repo.dart';
 class CouponController extends GetxController {
   CouponRepo couponRepo = CouponRepo();
   List<CouponData> couponDataList = <CouponData>[];
+  bool loader = false;
 
   @override
   void onInit() {
@@ -14,11 +15,13 @@ class CouponController extends GetxController {
   }
 
   getCouponList() async {
+    loader = true;
+    update();
     var couponData = await CouponRepo.getCoupon();
     if (couponData != null) {
-      couponDataList = couponData.data!;
-      update();
+      couponDataList = couponData.data ?? [];
     }
+    loader = false;
     update();
   }
 }

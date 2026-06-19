@@ -6,6 +6,14 @@ class APIList {
   static String? licenseCode = "b6d68vy2-m7g5-20r0-5275-h103w73453q120";
   static String? paymentUrl = "${baseUrl!}/payment/";
   static String? login = "${baseUrl!}/api/auth/login";
+  static String? socialLoginProviders =
+      "${baseUrl!}/api/frontend/social-login?status=5";
+  static String? socialLoginUrl(String provider) =>
+      "${baseUrl!}/api/auth/login/$provider";
+  static String? socialLoginVerify(String provider) =>
+      "${baseUrl!}/api/auth/login/$provider";
+  static String? socialLoginMobile(String provider) =>
+      "${baseUrl!}/api/auth/login/$provider/mobile";
   static String? otpSignUp = "${baseUrl!}/api/auth/signup/otp";
   static String? otpVarify = "${baseUrl!}/api/auth/signup/verify";
   static String? register = "${baseUrl!}/api/auth/signup/register";

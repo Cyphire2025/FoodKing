@@ -46,7 +46,7 @@ class LoaderCircle extends StatelessWidget {
             ),
           ),
         ),
-        const Positioned(
+        Positioned(
           top: 2,
           left: 2,
           right: 2,

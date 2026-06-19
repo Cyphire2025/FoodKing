@@ -16,8 +16,12 @@ class VeryfiyOtpView extends StatefulWidget {
   String? phoneNumber;
   bool? isGuest;
   bool? forgetPassword;
-  VeryfiyOtpView(
-      {super.key, this.phoneNumber, this.isGuest, this.forgetPassword});
+  VeryfiyOtpView({
+    super.key,
+    this.phoneNumber,
+    this.isGuest,
+    this.forgetPassword,
+  });
   @override
   State<VeryfiyOtpView> createState() => _VeryfiyOtpViewState();
 }
@@ -58,9 +62,13 @@ class _VeryfiyOtpViewState extends State<VeryfiyOtpView> {
               elevation: 0,
               backgroundColor: Colors.white,
               leading: IconButton(
-                icon: SvgPicture.asset(Images.back,
-                    colorFilter: ColorFilter.mode(
-                        AppColor.primaryColor, BlendMode.srcIn)),
+                icon: SvgPicture.asset(
+                  Images.back,
+                  colorFilter: ColorFilter.mode(
+                    AppColor.primaryColor,
+                    BlendMode.srcIn,
+                  ),
+                ),
                 onPressed: () {
                   Get.back();
                 },
@@ -72,118 +80,115 @@ class _VeryfiyOtpViewState extends State<VeryfiyOtpView> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 48.h,
-                      ),
+                      SizedBox(height: 48.h),
                       Image.asset(
                         Images.logo,
                         height: 60.h,
                         fit: BoxFit.contain,
                       ),
-                      SizedBox(
-                        height: 32.h,
-                      ),
+                      SizedBox(height: 32.h),
                       widget.forgetPassword!
                           ? Text(
                               'VERIFY_EMAIL'.tr,
                               style: TextStyle(
-                                  fontSize: 26.sp,
-                                  fontFamily: "Rubik",
-                                  fontWeight: FontWeight.w600),
+                                fontSize: 26.sp,
+                                fontFamily: "Rubik",
+                                fontWeight: FontWeight.w600,
+                              ),
                             )
                           : Text(
                               'VERIFY_NUMBER'.tr,
                               style: TextStyle(
-                                  fontSize: 26.sp,
-                                  fontFamily: "Rubik",
-                                  fontWeight: FontWeight.w600),
+                                fontSize: 26.sp,
+                                fontFamily: "Rubik",
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                      SizedBox(
-                        height: 41.h,
-                      ),
+                      SizedBox(height: 41.h),
                       Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'ENTER_THE_CODE_SENT_TO'.tr,
-                                    style: fontRegular,
-                                  ),
-                                  Text(
-                                    widget.phoneNumber.toString(),
-                                    style: fontMediumPro,
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10.h,
-                              ),
-                              Center(
-                                child: Pinput(
-                                  length: int.parse(box.read("otpLength")),
-                                  defaultPinTheme: defaultPinTheme,
-                                  focusedPinTheme: focusedPinTheme,
-                                  submittedPinTheme: submittedPinTheme,
-                                  pinputAutovalidateMode:
-                                      PinputAutovalidateMode.onSubmit,
-                                  showCursor: true,
-                                  onCompleted: (pin) {
-                                    if (widget.isGuest!) {
-                                      authController.guestOtpVarify(
-                                        widget.phoneNumber,
-                                        pin,
-                                      );
-                                    } else if (widget.forgetPassword!) {
-                                      authController.varifyEmail(
-                                          widget.phoneNumber, pin);
-                                    } else {
-                                      authController.otpVarify(
-                                        widget.phoneNumber,
-                                        pin,
-                                      );
-                                    }
-                                  },
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'ENTER_THE_CODE_SENT_TO'.tr,
+                                  style: fontRegular,
                                 ),
-                              ),
-                              SizedBox(
-                                height: 15.h,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  if (widget.isGuest == false &&
-                                      widget.forgetPassword == false) {
-                                    authController
-                                        .phoneNumberSignUp(widget.phoneNumber);
-                                  } else if (widget.isGuest == true &&
-                                      widget.forgetPassword == false) {
-                                    authController
-                                        .phoneNumberSignUp(widget.phoneNumber);
-                                  } else if (widget.forgetPassword == true &&
-                                      widget.isGuest == false) {
-                                    authController
-                                        .forgetPassword(widget.phoneNumber);
+                                Text(
+                                  widget.phoneNumber.toString(),
+                                  style: fontMediumPro,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+                            Center(
+                              child: Pinput(
+                                length: int.parse(box.read("otpLength")),
+                                defaultPinTheme: defaultPinTheme,
+                                focusedPinTheme: focusedPinTheme,
+                                submittedPinTheme: submittedPinTheme,
+                                pinputAutovalidateMode:
+                                    PinputAutovalidateMode.onSubmit,
+                                showCursor: true,
+                                onCompleted: (pin) {
+                                  if (widget.isGuest!) {
+                                    authController.guestOtpVarify(
+                                      widget.phoneNumber,
+                                      pin,
+                                    );
+                                  } else if (widget.forgetPassword!) {
+                                    authController.varifyEmail(
+                                      widget.phoneNumber,
+                                      pin,
+                                    );
+                                  } else {
+                                    authController.otpVarify(
+                                      widget.phoneNumber,
+                                      pin,
+                                    );
                                   }
                                 },
-                                child: Text(
-                                  'RESEND_CODE'.tr,
-                                  style: const TextStyle(
-                                      fontFamily: 'Rubik',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: AppColor.primaryColor),
+                              ),
+                            ),
+                            SizedBox(height: 15.h),
+                            InkWell(
+                              onTap: () {
+                                if (widget.isGuest == false &&
+                                    widget.forgetPassword == false) {
+                                  authController.phoneNumberSignUp(
+                                    widget.phoneNumber,
+                                  );
+                                } else if (widget.isGuest == true &&
+                                    widget.forgetPassword == false) {
+                                  authController.phoneNumberSignUp(
+                                    widget.phoneNumber,
+                                  );
+                                } else if (widget.forgetPassword == true &&
+                                    widget.isGuest == false) {
+                                  authController.forgetPassword(
+                                    widget.phoneNumber,
+                                  );
+                                }
+                              },
+                              child: Text(
+                                'RESEND_CODE'.tr,
+                                style: TextStyle(
+                                  fontFamily: 'Rubik',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  color: AppColor.primaryColor,
                                 ),
                               ),
-                              SizedBox(
-                                height: 24.h,
-                              ),
-                            ],
-                          )),
+                            ),
+                            SizedBox(height: 24.h),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -196,9 +201,7 @@ class _VeryfiyOtpViewState extends State<VeryfiyOtpView> {
                     height: MediaQuery.of(context).size.height,
                     width: MediaQuery.of(context).size.width,
                     color: Colors.white60,
-                    child: const Center(
-                      child: LoaderCircle(),
-                    ),
+                    child: const Center(child: LoaderCircle()),
                   ),
                 )
               : const SizedBox.shrink(),

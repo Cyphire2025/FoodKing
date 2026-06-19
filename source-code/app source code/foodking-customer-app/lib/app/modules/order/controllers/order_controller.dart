@@ -92,7 +92,7 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<OrderDetailsModel?> orderCancel(id) async {
+  Future<OrderDetailsModel?> orderCancel(id, {bool navigate = true}) async {
     orderDetailsLoader.value = true;
     update();
     try {
@@ -115,12 +115,13 @@ class OrderController extends GetxController {
               getMyOrderList();
               Get.find<HomeController>().getActiveOrderList();
               update();
-              Future.delayed(const Duration(milliseconds: 200), () {
-                Get.offAll(() => const DashboardView());
-                update();
-              });
-
-              customTast("ORDER_HAS_BEEN_CANCELLED".tr, AppColor.success);
+              if (navigate) {
+                Future.delayed(const Duration(milliseconds: 200), () {
+                  Get.offAll(() => const DashboardView());
+                  update();
+                });
+                customTast("ORDER_HAS_BEEN_CANCELLED".tr, AppColor.success);
+              }
 
               return orderDetailsModel;
             } else {

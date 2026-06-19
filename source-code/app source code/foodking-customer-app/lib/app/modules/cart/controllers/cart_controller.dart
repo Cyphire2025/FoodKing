@@ -86,27 +86,70 @@ class CartController extends GetxController {
     extraSum,
     instruction,
   ) {
+    final hasOffer = mainItem.offer != null && mainItem.offer!.isNotEmpty;
+    final unitPrice = hasOffer
+        ? mainItem.offer!.first.convertPrice ?? mainItem.convertPrice ?? 0.0
+        : mainItem.convertPrice ?? 0.0;
+    final itemExtras = extra is List<Extras> ? extra : <Extras>[];
+    final itemVariations = variationList is List<Variations>
+        ? variationList
+        : <Variations>[];
+    final normalizedInstruction = instruction?.toString() ?? '';
+
+    final existingIndex = cart.indexWhere(
+      (cartItem) =>
+          cartItem.itemId == mainItem.id &&
+          cartItem.branchId == homeController.selectedbranchId &&
+          (cartItem.instruction ?? '') == normalizedInstruction &&
+          _sameExtras(cartItem.itemExtras ?? <Extras>[], itemExtras) &&
+          _sameVariations(
+            cartItem.itemVariations ?? <Variations>[],
+            itemVariations,
+          ),
+    );
+
+    if (existingIndex >= 0) {
+      final existingItem = cart[existingIndex];
+      cart[existingIndex] = Cart(
+        itemId: existingItem.itemId,
+        itemName: existingItem.itemName,
+        itemPrice: existingItem.itemPrice,
+        branchId: existingItem.branchId,
+        itemImage: existingItem.itemImage,
+        quantity: (existingItem.quantity ?? 0) + itemQuantity,
+        discount: couponDiscount,
+        instruction: existingItem.instruction,
+        totalPrice: existingItem.totalPrice,
+        itemVariationTotal: existingItem.itemVariationTotal,
+        itemExtraTotal: existingItem.itemExtraTotal,
+        itemExtras: existingItem.itemExtras,
+        itemVariations: existingItem.itemVariations,
+      );
+
+      selectedExtraIndex.clear();
+      selectedAddOnsIndex.clear();
+      itemQuantity = 1;
+      update();
+      calculateTotal();
+      update();
+      return;
+    }
+
     cart.add(
       Cart(
         itemId: mainItem.id,
         itemName: mainItem.name,
-        itemPrice:
-            mainItem.offer!.isEmpty
-                ? mainItem.convertPrice
-                : mainItem.offer![0].convertPrice,
+        itemPrice: unitPrice,
         branchId: homeController.selectedbranchId,
         itemImage: mainItem.cover,
         quantity: itemQuantity,
         discount: couponDiscount,
-        instruction: instruction,
-        totalPrice:
-            mainItem.offer!.isEmpty
-                ? mainItem.convertPrice! + variationSum + extraSum
-                : mainItem.offer![0].convertPrice! + variationSum + extraSum,
+        instruction: normalizedInstruction,
+        totalPrice: unitPrice + variationSum + extraSum,
         itemVariationTotal: variationSum,
         itemExtraTotal: extraSum,
-        itemExtras: extra,
-        itemVariations: variationList,
+        itemExtras: itemExtras,
+        itemVariations: itemVariations,
       ),
     );
 
@@ -231,7 +274,9 @@ class CartController extends GetxController {
           f.quantity!;
       totalQunty += f.quantity!;
     });
-    if (Get.find<AddressController>().addressDataList.isNotEmpty) {
+    final hasAddressController = Get.isRegistered<AddressController>();
+    if (hasAddressController &&
+        Get.find<AddressController>().addressDataList.isNotEmpty) {
       total = deliveryCharge + totalCartValue - couponDiscount;
     } else {
       total = totalCartValue - couponDiscount;
@@ -333,5 +378,37 @@ class CartController extends GetxController {
     update();
     calculateTotal();
     update();
+  }
+
+  bool _sameExtras(List<Extras> left, List<Extras> right) {
+    if (left.length != right.length) return false;
+    for (var i = 0; i < left.length; i++) {
+      final a = left[i];
+      final b = right[i];
+      if (a.id != b.id ||
+          a.itemId != b.itemId ||
+          a.name != b.name ||
+          a.price != b.price) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool _sameVariations(List<Variations> left, List<Variations> right) {
+    if (left.length != right.length) return false;
+    for (var i = 0; i < left.length; i++) {
+      final a = left[i];
+      final b = right[i];
+      if (a.id != b.id ||
+          a.itemId != b.itemId ||
+          a.itemAttributeId != b.itemAttributeId ||
+          a.variationName != b.variationName ||
+          a.name != b.name ||
+          a.price != b.price) {
+        return false;
+      }
+    }
+    return true;
   }
 }

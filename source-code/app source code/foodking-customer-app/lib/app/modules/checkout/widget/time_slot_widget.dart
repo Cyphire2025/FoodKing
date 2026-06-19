@@ -20,41 +20,60 @@ class TimeSlotWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(right: 10),
+      padding: EdgeInsets.only(right: 10.w),
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(14.r),
         child: Container(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          height: 32.h,
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          height: 38.h,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.r),
-            color: isSelected
-                ? AppColor.primaryColor.withOpacity(0.08)
-                : AppColor.itembg,
+            borderRadius: BorderRadius.circular(14.r),
+            color: isSelected ? AppColor.primaryBackgroundColor : Colors.white,
             border: isSelected
-                ? Border.all(color: AppColor.primaryColor)
-                : Border.all(color: Colors.white),
+                ? Border.all(color: AppColor.primaryColor, width: 1.1.w)
+                : Border.all(color: AppColor.dividerColor),
+            boxShadow: [
+              BoxShadow(
+                color: AppColor.primaryColor.withOpacity(
+                  isSelected ? 0.07 : 0.03,
+                ),
+                blurRadius: 12.r,
+                offset: Offset(0, 5.h),
+              ),
+            ],
           ),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            SizedBox(
-              width: 16.w,
-              height: 16.h,
-              child: isSelected
-                  ? SvgPicture.asset(Images.IconVariationSelected,
-                      fit: BoxFit.cover,
-                      colorFilter: ColorFilter.mode(
-                          AppColor.primaryColor, BlendMode.srcIn))
-                  : SvgPicture.asset(
-                      Images.IconVariation,
-                      fit: BoxFit.cover,
-                    ),
-            ),
-            Text(
-              title,
-              style: fontRegular,
-            )
-          ]),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 14.w,
+                height: 14.h,
+                child: isSelected
+                    ? SvgPicture.asset(
+                        Images.IconVariationSelected,
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          AppColor.primaryColor,
+                          BlendMode.srcIn,
+                        ),
+                      )
+                    : SvgPicture.asset(Images.IconVariation, fit: BoxFit.cover),
+              ),
+              SizedBox(width: 6.w),
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: 'Rubik',
+                  color: isSelected
+                      ? AppColor.primaryColor
+                      : AppColor.fontColor,
+                  fontSize: 13.sp,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

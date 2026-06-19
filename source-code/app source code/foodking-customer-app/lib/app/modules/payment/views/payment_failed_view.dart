@@ -4,6 +4,9 @@ import 'package:get/get.dart';
 import '../../../../util/constant.dart';
 import '../../../../util/style.dart';
 import '../../dashboard/views/dashboard_view.dart';
+import '../../order/controllers/order_controller.dart';
+import '../../cart/views/cart_view.dart';
+import 'payment_view.dart';
 
 class PaymentFailedView extends GetView {
   const PaymentFailedView({super.key});
@@ -31,7 +34,13 @@ class PaymentFailedView extends GetView {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
+                      final orderCtrl = Get.find<OrderController>();
+                      final orderIdToCancel = orderCtrl.orderId ?? orderCtrl.orderDetailsData.value.id;
+                      if (orderIdToCancel != null) {
+                        orderCtrl.orderCancel(orderIdToCancel, navigate: false);
+                      }
                       Get.offAll(() => const DashboardView());
+                      Get.to(() => CartView(fromNav: false));
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 1,
@@ -58,7 +67,11 @@ class PaymentFailedView extends GetView {
                   child: ElevatedButton(
                     onPressed: () {
                       Get.back();
-                      Get.back();
+                      Get.offAll(() => PaymentView(
+                            orderId: Get.find<OrderController>().orderDetailsData.value.id,
+                            order: Get.find<OrderController>().orderDetailsData.value,
+                            fromHome: true,
+                          ));
                     },
                     style: ElevatedButton.styleFrom(
                       elevation: 1,

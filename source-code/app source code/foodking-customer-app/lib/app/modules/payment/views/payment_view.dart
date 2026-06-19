@@ -19,6 +19,8 @@ import '../../../../util/constant.dart';
 import '../../../../util/style.dart';
 import '../../../../widget/custom_toast.dart';
 import '../../order/controllers/order_controller.dart';
+import '../../cart/controllers/cart_controller.dart';
+import '../../cart/views/cart_view.dart';
 import 'payment_failed_view.dart';
 
 class PaymentView extends StatefulWidget {
@@ -124,13 +126,13 @@ class _PaymentViewState extends State<PaymentView> {
           child: Stack(
             children: [
               isLoading
-                  ? const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColor.primaryColor,
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          AppColor.primaryColor,
+                        ),
                       ),
-                    ),
-                  )
+                    )
                   : const SizedBox.shrink(),
             ],
           ),
@@ -228,6 +230,8 @@ class MyInAppBrowser extends InAppBrowser {
         if (_isSuccess) {
           _canRedirect = false;
           close();
+          Get.find<CartController>().cart.clear();
+          Get.find<CartController>().removeCoupon();
           Get.find<OrderController>().getOrderDetails(order?.id ?? 0);
 
           if (fromHome == true) {
@@ -326,7 +330,12 @@ class MyInAppBrowser extends InAppBrowser {
             AppColor.success,
           );
         } else if (_isFailed || _isCancel || _isBack) {
-          Get.back();
+          final int? idToCancel = orderID ?? order?.id;
+          if (idToCancel != null) {
+            Get.find<OrderController>().orderCancel(idToCancel, navigate: false);
+          }
+          Get.offAll(() => const DashboardView());
+          Get.to(() => CartView(fromNav: false));
           customSnackbar(
             "DIGITAL_PAYMENT".tr,
             "PAYMENT_FAILED".tr,

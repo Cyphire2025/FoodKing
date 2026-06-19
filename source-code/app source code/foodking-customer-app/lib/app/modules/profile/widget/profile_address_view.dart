@@ -31,234 +31,230 @@ class _ProfileAddressViewState extends State<ProfileAddressView> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<AddressController>(
-        builder: (addressController) => Stack(
-              children: [
-                Scaffold(
-                  backgroundColor: Colors.white,
-                  appBar: AppBar(
-                    centerTitle: false,
-                    elevation: 0,
-                    backgroundColor: Colors.white,
-                    leading: IconButton(
-                      icon: SvgPicture.asset(Images.back,
-                          colorFilter: ColorFilter.mode(
-                              AppColor.primaryColor, BlendMode.srcIn)),
-                      onPressed: () {
-                        Get.back();
-                      },
-                    ),
+      builder: (addressController) => Stack(
+        children: [
+          Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              centerTitle: false,
+              elevation: 0,
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                icon: SvgPicture.asset(
+                  Images.back,
+                  colorFilter: ColorFilter.mode(
+                    AppColor.primaryColor,
+                    BlendMode.srcIn,
                   ),
-                  body: SingleChildScrollView(
-                    primary: true,
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    child: Column(
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+            ),
+            body: SingleChildScrollView(
+              primary: true,
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(8.r),
+                    child: Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(left: 16.w, right: 16.w),
-                                child: Text(
-                                  'MY_ADDRESSES'.tr,
-                                  style: TextStyle(
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w800),
+                          padding: EdgeInsets.only(left: 16.w, right: 16.w),
+                          child: Text(
+                            'MY_ADDRESSES'.tr,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Padding(
+                          padding: EdgeInsets.only(right: 16.r),
+                          child: InkWell(
+                            onTap: () => _checkPermission(() {
+                              Get.to(() => AddPickLocationView());
+                            }),
+                            child: Card(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(17.r),
+                              ),
+                              color: AppColor.addNewBtnColor,
+                              child: Padding(
+                                padding: EdgeInsets.all(6.r),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.add_circle,
+                                      color: AppColor.primaryColor,
+                                    ),
+                                    SizedBox(width: 5.w),
+                                    Text(
+                                      'ADD_NEW'.tr,
+                                      style: fontRegularWithColor,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const Spacer(),
-                              Padding(
-                                padding: EdgeInsets.only(right: 16.r),
-                                child: InkWell(
-                                  onTap: () => _checkPermission(() {
-                                    Get.to(()=>AddPickLocationView());
-                                  }),
-                                  child: Card(
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(17.r)),
-                                    color: AppColor.addNewBtnColor,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(6.r),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.add_circle,
-                                            color: AppColor.primaryColor,
-                                          ),
-                                          SizedBox(
-                                            width: 5.w,
-                                          ),
-                                          Text(
-                                            'ADD_NEW'.tr,
-                                            style: fontRegularWithColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: addressController.addressDataList.length,
+                    itemBuilder: (BuildContext context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: 10.w, left: 10.w),
+                        child: Container(
+                          margin: EdgeInsets.all(5.r),
+                          height: 90.h,
+                          width: 158.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            color: AppColor.itembg,
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 40.w,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    addressController
+                                                .addressDataList[index]
+                                                .label
+                                                .toString() ==
+                                            "Home"
+                                        ? SvgPicture.asset(
+                                            Images.homeIcon,
+                                            fit: BoxFit.cover,
+                                            height: 15.h,
+                                            width: 15.w,
                                           )
-                                        ],
+                                        : addressController
+                                                  .addressDataList[index]
+                                                  .label
+                                                  .toString() ==
+                                              "Office"
+                                        ? SvgPicture.asset(
+                                            Images.work,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : SvgPicture.asset(
+                                            Images.other,
+                                            fit: BoxFit.cover,
+                                          ),
+                                    SvgPicture.asset(
+                                      Images.locationIcon,
+                                      fit: BoxFit.cover,
+                                      height: 18.h,
+                                      width: 18.w,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: SizedBox(
+                                  width: 40.w,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        addressController
+                                            .addressDataList[index]
+                                            .label
+                                            .toString(),
+                                        style: fontRegularBold,
+                                      ),
+                                      Text(
+                                        addressController
+                                            .addressDataList[index]
+                                            .address
+                                            .toString(),
+                                        style: fontRegular,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 40.w,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Get.to(
+                                          () => EditPickLocationView(
+                                            addressData: addressController
+                                                .addressDataList[index],
+                                          ),
+                                        );
+                                      },
+                                      child: SvgPicture.asset(
+                                        Images.iconEdit,
+                                        fit: BoxFit.cover,
+                                        height: 18.h,
+                                        width: 18.w,
+                                        color: AppColor.primaryColor,
                                       ),
                                     ),
-                                  ),
+                                    InkWell(
+                                      onTap: () {
+                                        addressController.deleletAddress(
+                                          addressController
+                                              .addressDataList[index]
+                                              .id!,
+                                        );
+                                      },
+                                      child: SvgPicture.asset(
+                                        Images.iconTrash,
+                                        fit: BoxFit.cover,
+                                        height: 18.h,
+                                        width: 18.w,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 16.h,
-                        ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: addressController.addressDataList.length,
-                            itemBuilder: (BuildContext context, index) {
-                              return Padding(
-                                padding:
-                                    EdgeInsets.only(right: 10.w, left: 10.w),
-                                child: Container(
-                                  margin: EdgeInsets.all(5.r),
-                                  height: 90.h,
-                                  width: 158.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    color: AppColor.itembg,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 40.w,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            addressController
-                                                        .addressDataList[index]
-                                                        .label
-                                                        .toString() ==
-                                                    "Home"
-                                                ? SvgPicture.asset(
-                                                    Images.homeIcon,
-                                                    fit: BoxFit.cover,
-                                                    height: 15.h,
-                                                    width: 15.w,
-                                                  )
-                                                : addressController
-                                                            .addressDataList[
-                                                                index]
-                                                            .label
-                                                            .toString() ==
-                                                        "Office"
-                                                    ? SvgPicture.asset(
-                                                        Images.work,
-                                                        fit: BoxFit.cover,
-                                                      )
-                                                    : SvgPicture.asset(
-                                                        Images.other,
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                            SvgPicture.asset(
-                                              Images.locationIcon,
-                                              fit: BoxFit.cover,
-                                              height: 18.h,
-                                              width: 18.w,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: 40.w,
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Text(
-                                                addressController
-                                                    .addressDataList[index]
-                                                    .label
-                                                    .toString(),
-                                                style: fontRegularBold,
-                                              ),
-                                              Text(
-                                                addressController
-                                                    .addressDataList[index]
-                                                    .address
-                                                    .toString(),
-                                                style: fontRegular,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 40.w,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                Get.to(
-                                                    () => EditPickLocationView(
-                                                          addressData:
-                                                              addressController
-                                                                      .addressDataList[
-                                                                  index],
-                                                        ));
-                                              },
-                                              child: SvgPicture.asset(
-                                                Images.iconEdit,
-                                                fit: BoxFit.cover,
-                                                height: 18.h,
-                                                width: 18.w,
-                                                color: AppColor.primaryColor,
-                                              ),
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                addressController
-                                                    .deleletAddress(
-                                                        addressController
-                                                            .addressDataList[
-                                                                index]
-                                                            .id!);
-                                              },
-                                              child: SvgPicture.asset(
-                                                Images.iconTrash,
-                                                fit: BoxFit.cover,
-                                                height: 18.h,
-                                                width: 18.w,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            })
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                ),
-                addressController.deleteAddressLoader
-                    ? Positioned(
-                        child: Container(
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                          color: Colors.white60,
-                          child: const Center(
-                            child: LoaderCircle(),
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ],
-            ));
+                ],
+              ),
+            ),
+          ),
+          addressController.deleteAddressLoader
+              ? Positioned(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.white60,
+                    child: const Center(child: LoaderCircle()),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ],
+      ),
+    );
   }
 
   void _checkPermission(Function onTap) async {

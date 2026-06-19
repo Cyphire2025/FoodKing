@@ -22,6 +22,7 @@ class PlaceOrderBody {
     this.total,
     this.couponId,
     this.discount,
+    this.checkoutPaymentMethod,
     this.source,
     this.items,
   });
@@ -37,6 +38,7 @@ class PlaceOrderBody {
   double? total;
   int? couponId;
   double? discount;
+  String? checkoutPaymentMethod;
   int? source;
   List<Cart>? items;
 
@@ -52,11 +54,11 @@ class PlaceOrderBody {
     total: json["total"],
     couponId: json["coupon_id"],
     discount: json["discount"],
+    checkoutPaymentMethod: json["checkout_payment_method"],
     source: json["source"],
-    items:
-        json["items"] == null
-            ? []
-            : List<Cart>.from(json["items"]!.map((x) => Cart.fromJson(x))),
+    items: json["items"] == null
+        ? []
+        : List<Cart>.from(json["items"]!.map((x) => Cart.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -71,9 +73,11 @@ class PlaceOrderBody {
     "total": total,
     "coupon_id": couponId,
     "discount": discount,
+    "checkout_payment_method": checkoutPaymentMethod,
     "source": source,
-    "items":
-        items == null ? [] : List<dynamic>.from(items!.map((x) => x.toJson())),
+    "items": items == null
+        ? []
+        : List<dynamic>.from(items!.map((x) => x.toJson())),
   };
 }
 
@@ -120,18 +124,16 @@ class Cart {
     totalPrice: json["total_price"],
     itemVariationTotal: json["item_variation_total"],
     itemExtraTotal: json["item_extra_total"],
-    itemVariations:
-        json["item_variations"] == null
-            ? []
-            : List<Variations>.from(
-              json["item_variations"]!.map((x) => Variations.fromJson(x)),
-            ),
-    itemExtras:
-        json["item_extras"] == null
-            ? []
-            : List<Extras>.from(
-              json["item_extras"]!.map((x) => Extras.fromJson(x)),
-            ),
+    itemVariations: json["item_variations"] == null
+        ? []
+        : List<Variations>.from(
+            json["item_variations"]!.map((x) => Variations.fromJson(x)),
+          ),
+    itemExtras: json["item_extras"] == null
+        ? []
+        : List<Extras>.from(
+            json["item_extras"]!.map((x) => Extras.fromJson(x)),
+          ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -144,14 +146,12 @@ class Cart {
     "total_price": (totalPrice! * quantity!),
     "item_variation_total": itemVariationTotal,
     "item_extra_total": itemExtraTotal,
-    "item_variations":
-        itemVariations == null
-            ? []
-            : List<dynamic>.from(itemVariations!.map((x) => x.toJson())),
-    "item_extras":
-        itemExtras == null
-            ? []
-            : List<dynamic>.from(itemExtras!.map((x) => x.toJson())),
+    "item_variations": itemVariations == null
+        ? []
+        : List<dynamic>.from(itemVariations!.map((x) => x.toJson())),
+    "item_extras": itemExtras == null
+        ? []
+        : List<dynamic>.from(itemExtras!.map((x) => x.toJson())),
   };
 }
 

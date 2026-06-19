@@ -1,0 +1,76 @@
+[2m3:32:40 am[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] C:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css:216:41: The `font-roboto` class does not exist. If `font-roboto` is a custom class, make sure it is defined within a `@layer` directive.[39m
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css[39m:216:40
+[33m  214|      .product-card-grid-footer-group { @apply flex items-end justify-between gap-3 pt-1.5 }
+  215|      .product-card-grid-price-group { @apply flex flex-wrap items-end gap-x-2 }
+  216|      .product-card-grid-price-previous { @apply text-[10px] font-medium text-paragraph line-through font-roboto }
+     |                                          ^
+  217|      .product-card-grid-price-current { @apply text-[14px] leading-none font-medium text-heading font-roboto }
+  218|      .product-card-grid-cart-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-light shadow-[0_8px_18px_rgba(109,51,92,0.08)] transition hover:bg-primary-light/80 }[39m
+      at Input.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\input.js:135:16)
+      at AtRule.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\node.js:146:32)
+      at processApply (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:380:29)
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:551:9
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\processTailwindFeatures.js:55:50
+      at async plugins (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\plugin.js:38:17)
+      at async LazyResult.runAsync (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\lazy-result.js:293:11)
+      at async runPostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43853:21)
+      at async compilePostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43823:18)
+      at async compileCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43678:27)
+[2m3:32:40 am[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] C:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css:216:41: The `font-roboto` class does not exist. If `font-roboto` is a custom class, make sure it is defined within a `@layer` directive.[39m
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css[39m:216:40
+[33m  214|      .product-card-grid-footer-group { @apply flex items-end justify-between gap-3 pt-1.5 }
+  215|      .product-card-grid-price-group { @apply flex flex-wrap items-end gap-x-2 }
+  216|      .product-card-grid-price-previous { @apply text-[10px] font-medium text-paragraph line-through font-roboto }
+     |                                          ^
+  217|      .product-card-grid-price-current { @apply text-[14px] leading-none font-medium text-heading font-roboto }
+  218|      .product-card-grid-cart-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-light shadow-[0_8px_18px_rgba(109,51,92,0.08)] transition hover:bg-primary-light/80 }[39m
+      at Input.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\input.js:135:16)
+      at AtRule.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\node.js:146:32)
+      at processApply (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:380:29)
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:551:9
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\processTailwindFeatures.js:55:50
+      at async plugins (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\plugin.js:38:17)
+      at async LazyResult.runAsync (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\lazy-result.js:293:11)
+      at async runPostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43853:21)
+      at async compilePostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43823:18)
+      at async compileCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43678:27)
+[2m3:32:49 am[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] C:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css:216:41: The `font-roboto` class does not exist. If `font-roboto` is a custom class, make sure it is defined within a `@layer` directive.[39m
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css[39m:216:40
+[33m  214|      .product-card-grid-footer-group { @apply flex items-end justify-between gap-3 pt-1.5 }
+  215|      .product-card-grid-price-group { @apply flex flex-wrap items-end gap-x-2 }
+  216|      .product-card-grid-price-previous { @apply text-[10px] font-medium text-paragraph line-through font-roboto }
+     |                                          ^
+  217|      .product-card-grid-price-current { @apply text-[14px] leading-none font-medium text-heading font-roboto }
+  218|      .product-card-grid-cart-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-light shadow-[0_8px_18px_rgba(109,51,92,0.08)] transition hover:bg-primary-light/80 }[39m
+      at Input.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\input.js:135:16)
+      at AtRule.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\node.js:146:32)
+      at processApply (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:380:29)
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:551:9
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\processTailwindFeatures.js:55:50
+      at async plugins (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\plugin.js:38:17)
+      at async LazyResult.runAsync (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\lazy-result.js:293:11)
+      at async runPostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43853:21)
+      at async compilePostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43823:18)
+      at async compileCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43678:27)
+[2m3:33:08 am[22m [31m[1m[vite][22m[39m [31mInternal server error: [postcss] C:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css:216:41: The `font-roboto` class does not exist. If `font-roboto` is a custom class, make sure it is defined within a `@layer` directive.[39m
+  Plugin: [35mvite:css[39m
+  File: [36mC:/Users/nipun/Desktop/FoodKing/source-code/web source code/foodking/resources/css/app.css[39m:216:40
+[33m  214|      .product-card-grid-footer-group { @apply flex items-end justify-between gap-3 pt-1.5 }
+  215|      .product-card-grid-price-group { @apply flex flex-wrap items-end gap-x-2 }
+  216|      .product-card-grid-price-previous { @apply text-[10px] font-medium text-paragraph line-through font-roboto }
+     |                                          ^
+  217|      .product-card-grid-price-current { @apply text-[14px] leading-none font-medium text-heading font-roboto }
+  218|      .product-card-grid-cart-btn { @apply inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-light shadow-[0_8px_18px_rgba(109,51,92,0.08)] transition hover:bg-primary-light/80 }[39m
+      at Input.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\input.js:135:16)
+      at AtRule.error (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\node.js:146:32)
+      at processApply (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:380:29)
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\lib\expandApplyAtRules.js:551:9
+      at C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\processTailwindFeatures.js:55:50
+      at async plugins (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\tailwindcss\lib\plugin.js:38:17)
+      at async LazyResult.runAsync (C:\Users\nipun\Desktop\FoodKing\source-code\web source code\foodking\node_modules\postcss\lib\lazy-result.js:293:11)
+      at async runPostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43853:21)
+      at async compilePostCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43823:18)
+      at async compileCSS (file:///C:/Users/nipun/Desktop/FoodKing/source-code/web%20source%20code/foodking/node_modules/vite/dist/node/chunks/dep-D4NMHUTW.js:43678:27)

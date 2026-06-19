@@ -6,6 +6,7 @@ import 'package:foodking/app/data/model/response/language_model.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../../util/api-list.dart';
+import '../../../../util/constant.dart';
 import '../../../data/api/server.dart';
 import '../../../data/model/response/config_model.dart';
 import '../../../data/model/response/country_code_model.dart';
@@ -43,31 +44,45 @@ class SplashController extends GetxController {
   Future<ConfigModel?> getConfiguration() async {
     final box = GetStorage();
     try {
-      await server
-          .getRequestWithoutToken(endPoint: APIList.configuration)
-          .then((response) {
-        if (response != null && response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          configModel = ConfigModel.fromJson(jsonResponse);
-          configData = configModel.data!;
-          update();
-          box.write("countryCodeName",
-              configModel.data!.companyCountryCode.toString());
-          box.write("otpVarify", configData.sitePhoneVerification);
-          box.write("otpLength", configData.otpDigitLimit);
-          box.write("otpTime", configData.otpExpireTime);
-          box.write("currencySymbol", configData.siteDefaultCurrencySymbol);
-          getCountryInfo(configModel.data!.companyCountryCode.toString());
-          update();
-          return configModel;
-        } else {
-          debugPrint(response.body);
-        }
-      });
+      await server.getRequestWithoutToken(endPoint: APIList.configuration).then(
+        (response) {
+          if (response != null && response.statusCode == 200) {
+            final jsonResponse = json.decode(response.body);
+            configModel = ConfigModel.fromJson(jsonResponse);
+            configData = configModel.data!;
+            AppColor.primaryColor = _colorFromHex(configData.appPrimaryColor);
+            update();
+            box.write(
+              "countryCodeName",
+              configModel.data!.companyCountryCode.toString(),
+            );
+            box.write("otpVarify", configData.sitePhoneVerification);
+            box.write("otpLength", configData.otpDigitLimit);
+            box.write("otpTime", configData.otpExpireTime);
+            box.write("currencySymbol", configData.siteDefaultCurrencySymbol);
+            getCountryInfo(configModel.data!.companyCountryCode.toString());
+            update();
+            return configModel;
+          } else {
+            debugPrint(response.body);
+          }
+        },
+      );
     } catch (e) {
       debugPrint(e.toString());
     }
     return configModel;
+  }
+
+  Color _colorFromHex(String? value) {
+    final hex = (value ?? '').replaceAll('#', '').trim();
+    if (hex.length != 6) {
+      return AppColor.primaryColor;
+    }
+
+    return Color(
+      int.tryParse('FF$hex', radix: 16) ?? AppColor.primaryColor.toARGB32(),
+    );
   }
 
   Future<CountryInfo?> getCountryInfo(String countryCode) async {
@@ -76,19 +91,19 @@ class SplashController extends GetxController {
       await server
           .getRequestWithoutToken(endPoint: APIList.countryInfo! + countryCode)
           .then((response) {
-        if (response != null && response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          countryInfo = CountryInfo.fromJson(jsonResponse);
-          countryInfoData = countryInfo.data!;
-          update();
-          box.write("countryCode", countryInfoData.callingCode);
-          box.write("countryFlag", countryInfoData.flagEmoji);
-          update();
-          return countryInfo;
-        } else {
-          debugPrint(response.body);
-        }
-      });
+            if (response != null && response.statusCode == 200) {
+              final jsonResponse = json.decode(response.body);
+              countryInfo = CountryInfo.fromJson(jsonResponse);
+              countryInfoData = countryInfo.data!;
+              update();
+              box.write("countryCode", countryInfoData.callingCode);
+              box.write("countryFlag", countryInfoData.flagEmoji);
+              update();
+              return countryInfo;
+            } else {
+              debugPrint(response.body);
+            }
+          });
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -97,9 +112,9 @@ class SplashController extends GetxController {
 
   Future<PageModel> getPages() async {
     try {
-      await server
-          .getRequestWithoutToken(endPoint: APIList.pages!)
-          .then((response) {
+      await server.getRequestWithoutToken(endPoint: APIList.pages!).then((
+        response,
+      ) {
         if (response != null && response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
           pageModelData = PageModel.fromJson(jsonResponse);
@@ -113,7 +128,7 @@ class SplashController extends GetxController {
     return pageModelData;
   }
 
-  getPageData() async {
+  Future<void> getPageData() async {
     var responsePageData = await getPages();
     if (responsePageData.data != null) {
       pageDataList = responsePageData.data!;
@@ -123,9 +138,9 @@ class SplashController extends GetxController {
 
   Future<LanguageModel> getLanguage() async {
     try {
-      await server
-          .getRequestWithoutToken(endPoint: APIList.language!)
-          .then((response) {
+      await server.getRequestWithoutToken(endPoint: APIList.language!).then((
+        response,
+      ) {
         if (response != null && response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
           languageModelData = LanguageModel.fromJson(jsonResponse);
@@ -139,7 +154,7 @@ class SplashController extends GetxController {
     return languageModelData;
   }
 
-  getLanguageData() async {
+  Future<void> getLanguageData() async {
     var langData = await getLanguage();
     if (langData.data!.isNotEmpty) {
       languageDataList = langData.data!;

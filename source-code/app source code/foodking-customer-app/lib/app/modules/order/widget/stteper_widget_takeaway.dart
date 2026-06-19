@@ -69,8 +69,20 @@ class _Stepper extends State<StepperWidgetTakeAway> {
                 customStep: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: orderController.orderDetailsData.value.status! >= 1
-                      ? SvgPicture.asset(Images.tick)
-                      : SvgPicture.asset(Images.roundStepper),
+                      ? SvgPicture.asset(
+                          Images.tick,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          Images.roundStepper,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                 ),
                 customTitle: Text(
                   "ORDER_PLACED".tr,
@@ -90,8 +102,20 @@ class _Stepper extends State<StepperWidgetTakeAway> {
                 customStep: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: orderController.orderDetailsData.value.status! >= 4
-                      ? SvgPicture.asset(Images.tick)
-                      : SvgPicture.asset(Images.roundStepper),
+                      ? SvgPicture.asset(
+                          Images.tick,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          Images.roundStepper,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                 ),
                 customTitle: Text(
                   "ORDER_ACCEPTED".tr,
@@ -111,8 +135,20 @@ class _Stepper extends State<StepperWidgetTakeAway> {
                 customStep: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: orderController.orderDetailsData.value.status! >= 7
-                      ? SvgPicture.asset(Images.tick)
-                      : SvgPicture.asset(Images.roundStepper),
+                      ? SvgPicture.asset(
+                          Images.tick,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          Images.roundStepper,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                 ),
                 customTitle: Text(
                   "ORDER_PREPARING".tr,
@@ -132,8 +168,20 @@ class _Stepper extends State<StepperWidgetTakeAway> {
                 customStep: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: orderController.orderDetailsData.value.status! >= 8
-                      ? SvgPicture.asset(Images.tick)
-                      : SvgPicture.asset(Images.roundStepper),
+                      ? SvgPicture.asset(
+                          Images.tick,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          Images.roundStepper,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                 ),
                 customTitle: Text(
                   "ORDER_PREPARED".tr,
@@ -153,11 +201,23 @@ class _Stepper extends State<StepperWidgetTakeAway> {
                 customStep: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: orderController.orderDetailsData.value.status! >= 13
-                      ? SvgPicture.asset(Images.tick)
-                      : SvgPicture.asset(Images.roundStepper),
+                      ? SvgPicture.asset(
+                          Images.tick,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        )
+                      : SvgPicture.asset(
+                          Images.roundStepper,
+                          colorFilter: ColorFilter.mode(
+                            AppColor.primaryColor,
+                            BlendMode.srcIn,
+                          ),
+                        ),
                 ),
                 customTitle: Text(
-                  "ORDER_DELIVERED".tr,
+                  "ORDER_PICKED_UP".tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Rubik',

@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../util/constant.dart';
 import '../../../../util/style.dart';
@@ -22,6 +21,7 @@ import '../../../data/model/body/place_order_body.dart';
 import '../../../data/model/response/order_details_model.dart';
 import '../../address/widget/addAddress/add_pick_location_view.dart';
 import '../../address/widget/editAddress/edit_pick_location_view.dart';
+import '../../profile/widget/profile_address_view.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../../cart/widgets/cart_instruction_widget.dart';
 import '../../cart/widgets/cart_variation_widget.dart';
@@ -75,7 +75,11 @@ class _CheckoutViewState extends State<CheckoutView> {
     CheckoutController checkoutController = Get.put(CheckoutController());
     SplashController splashController = Get.put(SplashController());
     addressController.getAddressList();
-    connect.getConfiguration();
+    connect.getConfiguration().then((_) {
+      checkoutController.setDefaultPaymentMethod(
+        connect.configData.paymentGateways,
+      );
+    });
 
     if (addressController.addressDataList.isNotEmpty) {
       addressLat = double.parse(
@@ -125,7 +129,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     initialDeliveryCharge(cartController);
   }
 
-  initialDeliveryCharge(CartController cartController) {
+  void initialDeliveryCharge(CartController cartController) {
     cartController.deliveryCharge = 0.0;
     cartController.calculateTotal();
   }
@@ -136,19 +140,23 @@ class _CheckoutViewState extends State<CheckoutView> {
     AddressController addressController = Get.put(AddressController());
     HomeController homeController = Get.put(HomeController());
     SplashController splashController = Get.put(SplashController());
+    CheckoutController checkoutController = Get.put(CheckoutController());
 
     return GetBuilder<PlaceOrderController>(
       builder: (placeOrderController) => Stack(
         children: [
           Scaffold(
             resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.white,
+            backgroundColor: AppColor.primaryBackgroundColor,
             appBar: AppBar(
-              titleSpacing: -5,
-              title: Text('CHECKOUT'.tr, style: fontBoldWithColorBlack),
+              titleSpacing: -4,
+              title: Text(
+                'CHECKOUT'.tr,
+                style: fontBoldWithColorBlack.copyWith(fontSize: 20.sp),
+              ),
               centerTitle: false,
               elevation: 0,
-              backgroundColor: Colors.white,
+              backgroundColor: AppColor.primaryBackgroundColor,
               leading: IconButton(
                 icon: SvgPicture.asset(
                   Images.back,
@@ -464,7 +472,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                               padding: EdgeInsets.only(
                                 left: 16.w,
                                 right: 16.w,
-                                bottom: 24.h,
+                                bottom: 18.h,
                               ),
                               child: Column(
                                 children: [
@@ -476,7 +484,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                                       children: [
                                         Text(
                                           "DELIVERY_ADDRESS".tr,
-                                          style: fontMedium,
+                                          style: fontMedium.copyWith(
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                         Row(
                                           children: [
@@ -497,18 +508,23 @@ class _CheckoutViewState extends State<CheckoutView> {
                                                             16.r,
                                                           ),
                                                       color: AppColor
-                                                          .blueTransparent,
+                                                          .primaryColor
+                                                          .withOpacity(0.08),
                                                     ),
                                                     child: InkWell(
                                                       onTap: () {
-                                                        Get.to(
-                                                          () => EditPickLocationView(
-                                                            addressData:
-                                                                addressController
-                                                                    .addressDataList[addressController
-                                                                    .selectedAddress!],
-                                                          ),
-                                                        );
+                                                        if (addressController.selectedAddress == null) {
+                                                          Get.to(() => const ProfileAddressView());
+                                                        } else {
+                                                          Get.to(
+                                                            () => EditPickLocationView(
+                                                              addressData:
+                                                                  addressController
+                                                                      .addressDataList[addressController
+                                                                      .selectedAddress!],
+                                                            ),
+                                                          );
+                                                        }
                                                       },
                                                       child: Row(
                                                         mainAxisAlignment:
@@ -520,6 +536,13 @@ class _CheckoutViewState extends State<CheckoutView> {
                                                             fit: BoxFit.cover,
                                                             height: 13.h,
                                                             width: 13.h,
+                                                            colorFilter:
+                                                                ColorFilter.mode(
+                                                                  AppColor
+                                                                      .primaryColor,
+                                                                  BlendMode
+                                                                      .srcIn,
+                                                                ),
                                                           ),
                                                           SizedBox(width: 3.w),
                                                           Text(
@@ -534,7 +557,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                                                   .fontSizeSmall
                                                                   .sp,
                                                               color: AppColor
-                                                                  .blueTextColor,
+                                                                  .primaryColor,
                                                             ),
                                                           ),
                                                         ],
@@ -553,9 +576,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                                               ),
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(16.r),
+                                                    BorderRadius.circular(18.r),
                                                 color: AppColor.primaryColor
-                                                    .withAlpha(30),
+                                                    .withAlpha(24),
                                               ),
                                               child: InkWell(
                                                 onTap: () => _checkPermission(
@@ -762,7 +785,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                                                           fontSize:
                                                                               Dimensions.fontSizeDefault,
                                                                           color:
-                                                                              AppColor.blueTextColor,
+                                                                              AppColor.primaryColor,
                                                                         ),
                                                                       ),
                                                                     ),
@@ -898,22 +921,32 @@ class _CheckoutViewState extends State<CheckoutView> {
                                             Get.to(() => AddPickLocationView());
                                           },
                                           child: Container(
-                                            height: 60.h,
+                                            height: 70.h,
                                             width: double.infinity,
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(8.r),
-                                              color: AppColor.primaryColor
-                                                  .withOpacity(0.08),
+                                                  BorderRadius.circular(16.r),
+                                              color: Colors.white,
                                               border: Border.all(
-                                                color: AppColor.primaryColor,
+                                                color: AppColor.primaryColor
+                                                    .withOpacity(0.75),
                                               ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: AppColor.primaryColor
+                                                      .withOpacity(0.06),
+                                                  blurRadius: 18.r,
+                                                  offset: Offset(0, 8.h),
+                                                ),
+                                              ],
                                             ),
                                             child: Center(
                                               child: Text(
                                                 "PLEASE_ADD_DELIVERY_ADDRESS"
                                                     .tr,
-                                                style: fontRegularBold,
+                                                style: fontRegularBold.copyWith(
+                                                  color: AppColor.primaryColor,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -922,14 +955,15 @@ class _CheckoutViewState extends State<CheckoutView> {
                               ),
                             ),
                           ),
-                        GetBuilder<CheckoutController>(
-                          builder: (checkoutController) => Padding(
-                            padding: EdgeInsets.only(
-                              left: 16.w,
-                              bottom: 24.w,
-                              right: 8.w,
-                            ),
-                            child: Column(
+                        if (cartController.orderTypeIndex == 0)
+                          GetBuilder<CheckoutController>(
+                            builder: (checkoutController) => Padding(
+                              padding: EdgeInsets.only(
+                                left: 16.w,
+                                bottom: 20.h,
+                                right: 16.w,
+                              ),
+                              child: Column(
                               children: [
                                 Row(
                                   children: [
@@ -937,7 +971,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                                       padding: EdgeInsets.only(right: 8.w),
                                       child: Text(
                                         "PREFERENCE_TIME_TO_DELIVERY".tr,
-                                        style: fontMedium,
+                                        style: fontMedium.copyWith(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -946,7 +983,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                 Row(
                                   children: [
                                     SizedBox(
-                                      height: 40.h,
+                                      height: 44.h,
                                       child: ListView.builder(
                                         scrollDirection: Axis.horizontal,
                                         shrinkWrap: true,
@@ -973,11 +1010,11 @@ class _CheckoutViewState extends State<CheckoutView> {
                                     SizedBox(width: 12.w),
                                   ],
                                 ),
-                                SizedBox(height: 8.h),
+                                SizedBox(height: 10.h),
                                 if (checkoutController.selectDateSlot == 0)
                                   Container(
                                     alignment: Alignment.centerLeft,
-                                    height: 40.h,
+                                    height: 44.h,
                                     child:
                                         checkoutController
                                             .todayDataList
@@ -1041,7 +1078,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                 if (checkoutController.selectDateSlot == 1)
                                   Container(
                                     alignment: Alignment.centerLeft,
-                                    height: 40.h,
+                                    height: 44.h,
                                     child:
                                         checkoutController
                                             .tomorrowDataList
@@ -1103,8 +1140,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                           padding: EdgeInsets.only(
                             left: 16.w,
                             right: 16.w,
-                            top: 10.h,
-                            bottom: 10.h,
+                            top: 6.h,
+                            bottom: 12.h,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1113,123 +1150,23 @@ class _CheckoutViewState extends State<CheckoutView> {
                                 "CART_SUMMARY".tr,
                                 style: TextStyle(
                                   fontFamily: 'Rubik',
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              if (splashController
-                                          .configData
-                                          .orderSetupDelivery ==
-                                      5 &&
-                                  splashController
-                                          .configData
-                                          .orderSetupTakeaway ==
-                                      5)
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    child: ToggleSwitch(
-                                      minWidth: 90.w,
-                                      cornerRadius: 20.r,
-                                      activeBgColors: const [
-                                        [AppColor.delivaryActive],
-                                        [AppColor.delivaryActive],
-                                      ],
-                                      activeFgColor: Colors.white,
-                                      inactiveBgColor:
-                                          AppColor.delivaryInactive,
-                                      inactiveFgColor: Colors.white,
-                                      initialLabelIndex:
-                                          cartController.orderTypeIndex,
-                                      customTextStyles: [fontMediumProWhite],
-                                      totalSwitches: 2,
-                                      labels: ['DELIVERY'.tr, 'TAKEAWAY'.tr],
-                                      radiusStyle: true,
-                                      onToggle: (index) {
-                                        setState(() {
-                                          cartController.orderTypeIndex =
-                                              index!;
-                                          cartController
-                                              .distanceWiseDeliveryCharge();
-                                          cartController.calculateTotal();
-                                          if (index == 0 &&
-                                              addressController
-                                                      .selectedAddress ==
-                                                  null) {
-                                            cartController.deliveryCharge = 0.0;
-                                            cartController.calculateTotal();
-                                          }
-                                          if (index == 1) {
-                                            addressController.removeAddress(
-                                              null,
-                                            );
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              if (splashController
-                                          .configData
-                                          .orderSetupDelivery ==
-                                      5 &&
-                                  splashController
-                                          .configData
-                                          .orderSetupTakeaway ==
-                                      10)
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    child: ToggleSwitch(
-                                      minWidth: 90.w,
-                                      cornerRadius: 20.r,
-                                      activeBgColors: const [
-                                        [AppColor.delivaryActive],
-                                      ],
-                                      activeFgColor: Colors.white,
-                                      inactiveBgColor:
-                                          AppColor.delivaryInactive,
-                                      inactiveFgColor: Colors.white,
-                                      initialLabelIndex:
-                                          cartController.orderTypeIndex,
-                                      customTextStyles: [fontMediumProWhite],
-                                      totalSwitches: 1,
-                                      labels: ['DELIVERY'.tr],
-                                      radiusStyle: true,
-                                    ),
-                                  ),
-                                ),
-                              if (splashController
-                                          .configData
-                                          .orderSetupDelivery ==
-                                      10 &&
-                                  splashController
-                                          .configData
-                                          .orderSetupTakeaway ==
-                                      5)
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: SizedBox(
-                                    child: ToggleSwitch(
-                                      minWidth: 90.w,
-                                      cornerRadius: 20.r,
-                                      activeBgColors: const [
-                                        [AppColor.delivaryActive],
-                                      ],
-                                      activeFgColor: Colors.white,
-                                      inactiveBgColor:
-                                          AppColor.delivaryInactive,
-                                      inactiveFgColor: Colors.white,
-                                      initialLabelIndex:
-                                          cartController.orderTypeIndex,
-                                      customTextStyles: [fontMediumProWhite],
-                                      totalSwitches: 1,
-                                      labels: ['TAKEAWAY'.tr],
-                                      radiusStyle: true,
-                                    ),
-                                  ),
-                                ),
                             ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 16.w,
+                            right: 16.w,
+                            bottom: 14.h,
+                          ),
+                          child: _orderTypeSelector(
+                            splashController: splashController,
+                            cartController: cartController,
+                            addressController: addressController,
                           ),
                         ),
                         cartSummarySection(context),
@@ -1240,15 +1177,19 @@ class _CheckoutViewState extends State<CheckoutView> {
                 Positioned(
                   bottom: 0,
                   child: Container(
+                    width: Get.width,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(22.r),
+                        topRight: Radius.circular(22.r),
+                      ),
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: AppColor.itembg.withOpacity(1),
-                          offset: const Offset(6.0, 0.0),
-                          blurRadius: 10.0,
-                          spreadRadius: 2,
+                          color: AppColor.primaryColor.withOpacity(0.08),
+                          offset: Offset(0, -8.h),
+                          blurRadius: 22.r,
+                          spreadRadius: 1,
                         ),
                       ],
                     ),
@@ -1293,6 +1234,13 @@ class _CheckoutViewState extends State<CheckoutView> {
                                       "PLEASE_CHOOSE_AN_ADDRESS".tr,
                                       AppColor.error,
                                     );
+                                  } else if (checkoutController
+                                      .selectedPaymentMethod
+                                      .isEmpty) {
+                                    customTast(
+                                      "Please select a payment method.",
+                                      AppColor.error,
+                                    );
                                   } else {
                                     placeOrderController.placeOrderPost(
                                       PlaceOrderBody(
@@ -1320,6 +1268,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                                         total: cartController.total,
                                         couponId: cartController.couponId,
                                         discount: cartController.couponDiscount,
+                                        checkoutPaymentMethod:
+                                            checkoutController
+                                                .selectedPaymentMethod,
                                         source: 10,
                                         items: cartController.cart,
                                       ),
@@ -1331,12 +1282,18 @@ class _CheckoutViewState extends State<CheckoutView> {
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
                                 backgroundColor: AppColor.primaryColor,
-                                minimumSize: Size(328.w, 52.h),
+                                minimumSize: Size(Get.width - 32.w, 56.h),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24.r),
+                                  borderRadius: BorderRadius.circular(28.r),
                                 ),
                               ),
-                              child: Text("PLACE_ORDER".tr, style: fontMedium),
+                              child: Text(
+                                "PLACE_ORDER".tr,
+                                style: fontMedium.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -1362,7 +1319,7 @@ class _CheckoutViewState extends State<CheckoutView> {
     );
   }
 
-  _setMarkers() async {
+  Future<void> _setMarkers() async {
     // ignore: unused_local_variable
     BitmapDescriptor _bitmapDescriptor;
     // ignore: unused_local_variable
@@ -1425,8 +1382,24 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   void callback(bool isSuccess, OrderDetailsData orderDetailsData) {
     if (isSuccess) {
-      Get.offAll(() => const DashboardView());
-      confirmAlert(context, orderDetailsData).show();
+      final selectedPaymentMethod =
+          Get.find<CheckoutController>().selectedPaymentMethod;
+      if (selectedPaymentMethod == 'cash-on-delivery') {
+        Get.find<CartController>().cart.clear();
+        Get.find<CartController>().removeCoupon();
+        Get.offAll(() => const DashboardView());
+        confirmAlert(context, orderDetailsData).show();
+      } else if (Get.find<CheckoutController>().isPaymentMethodAllowed(
+        selectedPaymentMethod,
+      )) {
+        Get.offAll(
+          () => PaymentView(
+            orderId: orderDetailsData.id,
+            order: orderDetailsData,
+            fromHome: true,
+          ),
+        );
+      }
     }
   }
 
@@ -1444,7 +1417,92 @@ class _CheckoutViewState extends State<CheckoutView> {
     }
   }
 
-  confirmAlert(BuildContext context, OrderDetailsData orderDetaislData) {
+  Widget _orderTypeSelector({
+    required SplashController splashController,
+    required CartController cartController,
+    required AddressController addressController,
+  }) {
+    final deliveryEnabled = splashController.configData.orderSetupDelivery == 5;
+    final takeawayEnabled = splashController.configData.orderSetupTakeaway == 5;
+
+    if (!deliveryEnabled && !takeawayEnabled) {
+      return const SizedBox.shrink();
+    }
+
+    final options = <Map<String, dynamic>>[];
+    if (deliveryEnabled) {
+      options.add({'label': 'DELIVERY'.tr, 'index': 0});
+    }
+    if (takeawayEnabled) {
+      options.add({'label': 'TAKEAWAY'.tr, 'index': 1});
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(4.r),
+      decoration: BoxDecoration(
+        color: AppColor.primaryColor.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColor.primaryColor.withOpacity(0.12)),
+      ),
+      child: Row(
+        children: options.map((option) {
+          final index = option['index'] as int;
+          final selected = cartController.orderTypeIndex == index;
+          return Expanded(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  cartController.orderTypeIndex = index;
+                  cartController.distanceWiseDeliveryCharge();
+                  cartController.calculateTotal();
+                  if (index == 0 && addressController.selectedAddress == null) {
+                    cartController.deliveryCharge = 0.0;
+                    cartController.calculateTotal();
+                  }
+                  if (index == 1) {
+                    addressController.removeAddress(null);
+                  }
+                });
+              },
+              borderRadius: BorderRadius.circular(15.r),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                height: 40.h,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: selected ? AppColor.primaryColor : Colors.transparent,
+                  borderRadius: BorderRadius.circular(15.r),
+                  boxShadow: selected
+                      ? [
+                          BoxShadow(
+                            color: AppColor.primaryColor.withOpacity(0.18),
+                            blurRadius: 12.r,
+                            offset: Offset(0, 6.h),
+                          ),
+                        ]
+                      : [],
+                ),
+                child: Text(
+                  option['label'] as String,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: 'Rubik',
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                    color: selected ? Colors.white : AppColor.primaryColor,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Alert confirmAlert(BuildContext context, OrderDetailsData orderDetaislData) {
     return Alert(
       buttons: [],
       closeIcon: InkWell(
@@ -1625,28 +1683,52 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 }
 
-Widget cartSummarySection(context) {
+class _PaymentFallbackIcon extends StatelessWidget {
+  final String slug;
+
+  const _PaymentFallbackIcon({required this.slug});
+
+  @override
+  Widget build(BuildContext context) {
+    final isCod = slug == 'cash-on-delivery';
+    return Container(
+      height: 30.h,
+      width: 30.w,
+      decoration: BoxDecoration(
+        color: AppColor.primaryColor,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Icon(
+        isCod ? Icons.payments_outlined : Icons.credit_card,
+        color: Colors.white,
+        size: 17.sp,
+      ),
+    );
+  }
+}
+
+Widget cartSummarySection(BuildContext context) {
   SplashController splashController = Get.put(SplashController());
   return GetBuilder<CartController>(
     builder: (cartController) => Padding(
-      padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 100.h),
+      padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 110.h),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(22.r),
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: AppColor.itembg,
-              offset: const Offset(0.0, 0.0),
-              blurRadius: 5.0.r,
-              spreadRadius: 1.0.r,
+              color: AppColor.primaryColor.withOpacity(0.06),
+              offset: Offset(0, 12.h),
+              blurRadius: 24.r,
+              spreadRadius: 0.5.r,
             ),
           ],
         ),
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 24.h, left: 6.w, right: 12.w),
+              padding: EdgeInsets.fromLTRB(12.w, 18.h, 12.w, 6.h),
               child: ListView.builder(
                 primary: false,
                 shrinkWrap: true,
@@ -1654,63 +1736,57 @@ Widget cartSummarySection(context) {
                 itemBuilder: (BuildContext context, index) {
                   return Column(
                     children: [
-                      SizedBox(
-                        height: 65.h,
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 4.h),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Stack(
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 8.w,
-                                    right: 8.w,
-                                  ),
-                                  child: SizedBox(
-                                    width: 70.w,
-                                    height: 70.h,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8.r),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl: cartController
-                                            .cart[index]
-                                            .itemImage!,
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      image: imageProvider,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                        placeholder: (context, url) =>
-                                            Shimmer.fromColors(
-                                              child: Container(
-                                                height: 130.h,
-                                                width: 200.w,
-                                                color: Colors.grey,
+                                SizedBox(
+                                  width: 76.w,
+                                  height: 76.h,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(14.r),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          cartController.cart[index].itemImage!,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
                                               ),
-                                              baseColor: Colors.grey[300]!,
-                                              highlightColor: Colors.grey[400]!,
                                             ),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      ),
+                                          ),
+                                      placeholder: (context, url) =>
+                                          Shimmer.fromColors(
+                                            child: Container(
+                                              height: 76.h,
+                                              width: 76.w,
+                                              color: Colors.grey,
+                                            ),
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[400]!,
+                                          ),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
                                     ),
                                   ),
                                 ),
                                 Positioned(
-                                  top: 22.h,
+                                  left: 0,
+                                  top: 24.h,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(
                                       20.r,
                                     ), //or 15.0
                                     child: Container(
-                                      height: 20.h,
-                                      width: 20.w,
+                                      height: 24.h,
+                                      width: 24.w,
                                       color: AppColor.fontColor,
                                       child: Align(
                                         alignment: Alignment.center,
@@ -1727,18 +1803,18 @@ Widget cartSummarySection(context) {
                                 ),
                               ],
                             ),
-                            SizedBox(width: 4.w),
-                            SizedBox(
-                              height: 70.h,
-                              width: 210.w,
+                            SizedBox(width: 12.w),
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     cartController.cart[index].itemName!,
                                     style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Rubik',
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColor.fontColor,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -1747,8 +1823,7 @@ Widget cartSummarySection(context) {
                                   cartController.cart[index].itemVariations !=
                                           null
                                       ? SizedBox(
-                                          width: 240.w,
-                                          height: 16.h,
+                                          height: 18.h,
                                           child: ListView.builder(
                                             scrollDirection: Axis.horizontal,
                                             shrinkWrap: true,
@@ -1797,7 +1872,9 @@ Widget cartSummarySection(context) {
                                                   .cart[index]
                                                   .totalPrice!
                                                   .toStringAsFixed(2),
-                                              style: fontMediumPro,
+                                              style: fontMediumPro.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                             ),
                                           ],
                                         )
@@ -1808,7 +1885,9 @@ Widget cartSummarySection(context) {
                                                   .cart[index]
                                                   .totalPrice!
                                                   .toString(),
-                                              style: fontMediumPro,
+                                              style: fontMediumPro.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                             ),
                                             Text(
                                               Get.find<SplashController>()
@@ -1832,7 +1911,7 @@ Widget cartSummarySection(context) {
                         padding: EdgeInsets.only(left: 10.w),
                         child: cartInstructionSection(index),
                       ),
-                      const Divider(),
+                      Divider(color: AppColor.dividerColor, height: 20.h),
                     ],
                   );
                 },
@@ -1848,8 +1927,9 @@ Widget cartSummarySection(context) {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: AppColor.itembg),
+                  borderRadius: BorderRadius.circular(16.r),
+                  color: AppColor.primaryBackgroundColor.withOpacity(0.35),
+                  border: Border.all(color: AppColor.dividerColor),
                 ),
                 child: Column(
                   children: [
@@ -1964,7 +2044,7 @@ Widget cartSummarySection(context) {
                                         .configData
                                         .siteDefaultCurrencySymbol!,
                                     style: TextStyle(
-                                      color: AppColor.activeTxtBorderColor,
+                                      color: AppColor.primaryColor,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14.sp,
                                     ),
@@ -1977,7 +2057,9 @@ Widget cartSummarySection(context) {
                                           .siteDigitAfterDecimalPoint!,
                                     ),
                                   ),
-                                  style: fontRegularBoldGreen,
+                                  style: fontRegularBoldGreen.copyWith(
+                                    color: AppColor.primaryColor,
+                                  ),
                                 ),
                                 if (splashController
                                         .configData
@@ -2042,6 +2124,155 @@ Widget cartSummarySection(context) {
                           ),
                         ],
                       ),
+                    ),
+                    GetBuilder<CheckoutController>(
+                      builder: (checkoutController) {
+                        final paymentGateways = checkoutController
+                            .availablePaymentGateways(
+                              splashController.configData.paymentGateways,
+                            );
+                        if (paymentGateways.isNotEmpty &&
+                            checkoutController.selectedPaymentMethod.isEmpty) {
+                          Future.microtask(
+                            () => checkoutController.setDefaultPaymentMethod(
+                              paymentGateways,
+                            ),
+                          );
+                        }
+
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: 8.w,
+                            right: 8.w,
+                            top: 10.h,
+                            bottom: 12.h,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'PAYMENT_METHOD'.tr,
+                                  style: fontRegularBold,
+                                ),
+                              ),
+                              SizedBox(height: 10.h),
+                              if (paymentGateways.isEmpty)
+                                Text(
+                                  'No payment method is enabled.',
+                                  style: TextStyle(
+                                    color: AppColor.error,
+                                    fontSize: 13.sp,
+                                    fontFamily: 'Rubik',
+                                  ),
+                                )
+                              else
+                                GridView.builder(
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  itemCount: paymentGateways.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        mainAxisSpacing: 10.h,
+                                        crossAxisSpacing: 10.w,
+                                        childAspectRatio: 2.45,
+                                      ),
+                                  itemBuilder: (context, index) {
+                                    final method = paymentGateways[index];
+                                    final slug = method.slug ?? '';
+                                    final selected =
+                                        checkoutController
+                                            .selectedPaymentMethod ==
+                                        slug;
+                                    return InkWell(
+                                      onTap: () {
+                                        checkoutController.selectPaymentMethod(
+                                          slug,
+                                        );
+                                      },
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: selected
+                                              ? AppColor.primaryBackgroundColor
+                                              : Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            14.r,
+                                          ),
+                                          border: Border.all(
+                                            color: selected
+                                                ? AppColor.primaryColor
+                                                : AppColor.dividerColor,
+                                            width: selected ? 1.4.w : 1.w,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: AppColor.primaryColor
+                                                  .withOpacity(
+                                                    selected ? 0.08 : 0.03,
+                                                  ),
+                                              blurRadius: 12.r,
+                                              offset: Offset(0, 6.h),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12.w,
+                                          vertical: 8.h,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            _PaymentFallbackIcon(slug: slug),
+                                            SizedBox(width: 8.w),
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    method.name ?? slug,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Rubik',
+                                                      fontSize: 13.sp,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: AppColor.fontColor,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 2.h),
+                                                  Text(
+                                                    slug == 'cash-on-delivery'
+                                                        ? 'Pay on delivery'
+                                                        : 'Pay online',
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Rubik',
+                                                      fontSize: 11.sp,
+                                                      color: AppColor.gray,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

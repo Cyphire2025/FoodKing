@@ -38,6 +38,7 @@ class PlaceOrderController extends GetxController {
       "total": placeOrderModel.total,
       "coupon_id": placeOrderModel.couponId,
       "discount": placeOrderModel.discount,
+      "checkout_payment_method": placeOrderModel.checkoutPaymentMethod,
       "source": 10,
       "items": json.encode(placeOrderModel.items).toString(),
     };
@@ -48,12 +49,10 @@ class PlaceOrderController extends GetxController {
       if (response != null && response.statusCode == 201) {
         loader = false;
         update();
-        Get.find<CartController>().cart.clear();
         final jsonResponse = json.decode(response.body);
         orderDetailsModel = OrderDetailsModel.fromJson(jsonResponse);
         orderDetailsData = orderDetailsModel.data!;
         Get.find<HomeController>().getActiveOrderList();
-        Get.find<CartController>().removeCoupon();
         update();
         callback(true, orderDetailsData);
         update();
